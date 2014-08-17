@@ -9,7 +9,7 @@ var youtubeFactory = function ($injector, $timeout, $http) {
                 var that = $injector.get('youtubeFactory');
                 if (typeof gapi.client === 'undefined') {
                     console.log('google apis not loaded yet...');
-                    $timeout(that.init, 1);
+                    $timeout(that.init, 500);
                 } else {
                     console.log('google apis LOADED!');
                     gapi.client.load('youtube', 'v3', function(){
