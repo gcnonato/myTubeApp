@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html data-ng-app="myTubeApp">
+    <head>
+        <title>myTube</title>
+<!--Angular-->
+        <script src="app/js/angular.js"></script>
+        <script src="app/js/angular-route.js"></script>
+        <script src="app/js/angular-animate.js"></script> 
+<!--App and Routing-->
+        <script src="app/app.js"></script>
+        <!--Youtube API-->
+        <script src="https://apis.google.com/js/client.js" type="text/javascript"></script>
+<!--Services-->
+        <script src="app/services/values.js"></script>
+        <script src="app/services/youtubeFactory.js"></script>
+<!--Controllers-->
+        <script src="app/controllers/homePageController.js"></script>
+        <script src="app/controllers/newVidsController.js"></script>
+        <script src="app/controllers/likeVidsController.js"></script>
+        <script src="app/controllers/subscriptionsController.js"></script>
+        <script src="app/controllers/historyController.js"></script>
+<!--CSS-->
+        <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="css/stylesheet.css" rel="stylesheet" type="text/css" />
+        <link href="css/animate.css" rel="stylesheet" type="text/css" />
+<!--jQuery-->
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-default" >
+                <ul>
+                    <a href="#/home"><li class="btn btn"><img src="images/headerLogo.png" width="90" height="80"></li></a>
+                    <li class="btn btn-default navbar-btn"><a href="#/home">Home</a></li>
+                    <li class="btn btn-default navbar-btn"><a href="#/new">New</a></li>
+                    <li class="btn btn-default navbar-btn"><a href="#/like">Likes</a></li>
+                    <li class="btn btn-default navbar-btn"><a href="#/subscriptions">Subscriptions</a></li>
+                    <li class="btn btn-default navbar-btn"><a href="#/history">History</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div data-ng-view class="mainContainer"></div>
+        </main>
+    </body>
+</html>
