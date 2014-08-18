@@ -24,6 +24,7 @@ myTubeApp.config(function($routeProvider) {
         .otherwise( {redirectTo: '/home' });
     
 });
+//Initializing communications with YouTube Data API V3
 myTubeApp.run(function(youtubeFactory){
     youtubeFactory.init();
 });

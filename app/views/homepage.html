@@ -1,6 +1,23 @@
 <div>
-<h3>myTube!</h3>
+<h3>Welcome to myTube!</h3>
 <p>
-HOMEPAGE!
+Here are the results of your last search
 </p>
+</div>
+<div class="verticalSpacer"></div>
+<table class="table table-striped table-hover">
+    <tr>
+        <th></th>
+        <th>Videos</th>
+    </tr>
+    <tr data-ng-repeat="vid in responseList.items" class="animated fadeIn">
+        <td><img src="{{ vid.snippet.thumbnails.medium.url}}" class="vidThumb"></td>
+        <td>{{ vid.snippet.title }}</td>
+        <td><button data-ng-click="embedPlayer(vid.id.videoId)">Watch Video</button></td>
+    </tr>
+</table>
+
+<div id="playerPopup" ng-show="showVideoBox">
+    <div class="overlay animated fadeIn" ng-click="closeVideo()"></div>
+    <div class="videoBox animated fadeIn"></div>
 </div>

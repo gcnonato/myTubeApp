@@ -1,9 +1,10 @@
 var youtubeFactory = function ($injector, $timeout, $http) {
-        
+
         return {
             API_KEY: 'AIzaSyAnSABpTcJtt9tDfOVFKl6j1PPuWFmKSqQ',
             readyForAction: false,
             resultsMax: 5,
+            lastSearch: "",
 
             init: function(){
                 var that = $injector.get('youtubeFactory');
@@ -18,7 +19,7 @@ var youtubeFactory = function ($injector, $timeout, $http) {
                     });
                 }
             },
-            
+
             search: function(queryPhrase, callback){
                 if (!this.readyForAction){
                     // if we're not ready, don't do nothing
@@ -29,12 +30,15 @@ var youtubeFactory = function ($injector, $timeout, $http) {
                 var queryParams = { part: 'snippet' , type: 'video' , maxResults: this.resultsMax }
 
 
-                if (queryPhrase){
+                if (queryPhrase) {
                     queryParams.q = queryPhrase;
+                }
+                if (this.lastSearch !== queryPhrase){
+                    this.lastSearch = queryPhrase;
                 }
 
                 var requestList = gapi.client.youtube.search.list(queryParams);
-                
+
 //                var responseFunc = function (response){
 //                    console.log('response: ' + response);
 //                    this.responseList = response;
@@ -66,9 +70,9 @@ var youtubeFactory = function ($injector, $timeout, $http) {
             }
 
 
-        
+
         }
-        
+
 };
 
 angular.module('myTubeApp').factory('youtubeFactory',youtubeFactory);

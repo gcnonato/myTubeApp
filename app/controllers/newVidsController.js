@@ -24,13 +24,6 @@ var newVidsController = function($scope, $log, appInfo,youtubeFactory) {
         $('div.videoBox').empty();
     };
 };
-
-//function() {
-//    var init = function(){
-//    };
-//init();    
-//};
-
 myTubeApp.controller('newVidsController', newVidsController);
 
 
