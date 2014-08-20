@@ -1,0 +1,16 @@
+<table class="table table-striped table-hover">
+    <tr>
+        <th></th>
+        <th>Videos</th>
+    </tr>
+    <tr ng-repeat="vid in responseList.items" class="animated fadeIn">
+        <td><img src="{{ vid.snippet.thumbnails.medium.url}}" class="vidThumb"></td>
+        <td>{{ vid.snippet.title }}</td>
+        <td><button ng-click="embedPlayer(vid.id.videoId)" class="btn btn-primary">Watch Video</button></td>
+    </tr>
+</table>
+
+<div id="playerPopup" ng-show="showVideoBox">
+    <div class="overlay animated fadeIn" ng-click="closeVideo()"></div>
+    <div class="videoBox animated fadeIn"></div>
+</div>

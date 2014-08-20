@@ -6,12 +6,12 @@ myTubeApp.config(function($routeProvider) {
             templateUrl: 'app/views/homepage.html'
         })
         .when('/like', {
-            controller: 'likevidsController',
+            controller: 'likeVidsController',
             templateUrl: 'app/views/likevids.html'
         })
-        .when('/new', {
-            controller: 'newVidsController',
-            templateUrl: 'app/views/newvids.html'
+        .when('/search', {
+            controller: 'searchVidsController',
+            templateUrl: 'app/views/searchvids.html'
         })
         .when('/history', {
             controller: 'historyController',
@@ -24,6 +24,7 @@ myTubeApp.config(function($routeProvider) {
         .otherwise( {redirectTo: '/home' });
     
 });
+
 //Initializing communications with YouTube Data API V3
 myTubeApp.run(function(youtubeFactory){
     youtubeFactory.init();

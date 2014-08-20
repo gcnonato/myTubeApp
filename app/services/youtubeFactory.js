@@ -1,85 +1,101 @@
-var youtubeFactory = function ($injector, $timeout, $http) {
+var youtubeFactory = function ($injector, $timeout) {
 
         return {
             API_KEY: 'AIzaSyAnSABpTcJtt9tDfOVFKl6j1PPuWFmKSqQ',
             readyForAction: false,
             resultsMax: 5,
             lastSearch: "",
+            responseList: {},
 
+            /**
+             * init the google API client and set the readyForAction flag
+             */
             init: function(){
+                // since this function is called as a callback, we'll need "this" to really be the factory
                 var that = $injector.get('youtubeFactory');
                 if (typeof gapi.client === 'undefined') {
                     console.log('google apis not loaded yet...');
+                    // if not ready yet, try again in half a second
                     $timeout(that.init, 500);
                 } else {
                     console.log('google apis LOADED!');
                     gapi.client.load('youtube', 'v3', function(){
                         gapi.client.setApiKey(that.API_KEY);
+                        // NOW we're actually ready to use the YouTube API
                         that.readyForAction = true;
                     });
                 }
             },
 
+            /**
+             * run a video search on YouTube and make the response available in the callback
+             */
             search: function(queryPhrase, callback){
+                var that = $injector.get('youtubeFactory');
                 if (!this.readyForAction){
                     // if we're not ready, don't do nothing
                     console.log('Im Not Ready!!!');
                     return;
                 }
-                // do search here
-                var queryParams = { part: 'snippet' , type: 'video' , maxResults: this.resultsMax }
 
+                // init queryParams for the search
+                var queryParams = { part: 'snippet' , type: 'video' , maxResults: this.resultsMax }
 
                 if (queryPhrase) {
                     queryParams.q = queryPhrase;
                 }
+
                 if (this.lastSearch !== queryPhrase){
                     this.lastSearch = queryPhrase;
                 }
 
+                // init the request object using queryParams
                 var requestList = gapi.client.youtube.search.list(queryParams);
 
-//                var responseFunc = function (response){
-//                    console.log('response: ' + response);
-//                    this.responseList = response;
-//                };
-                requestList.execute(callback);
+                // run the search
+                requestList.execute(function(response) {
+                    // expose the response to the provided callback
+                    callback(response);
 
-
+                    // also persist the response in the factory itself
+                    that.responseList = response;
+                });
             },
 
+            /**
+             * get the player and embed it
+             */
             getPlayer: function(vid) {
+                var that = $injector.get('youtubeFactory');
                 if (!this.readyForAction){
                     // if we're not ready, don't do nothing
                     console.log('Im Not Ready!!!');
                     return;
                 }
 
+                // init the request object
                 var requestList = gapi.client.youtube.videos.list({
                     part: 'player',
                     id: vid
                     });
 
+                // run the request
                 requestList.execute(function(response){
-                    console.log('response: ');
-//                    console.log(response);
-                    console.log(response.items[0].player.embedHtml);
-                    var newElement = $(response.items[0].player.embedHtml)
+                    // compile the returned HTML string into a for-real HTML element
+                    var newElement = $(response.items[0].player.embedHtml);
+                    // append the newElement into its place in the view
                     $('div.videoBox').append(newElement);
                 });
             }
-
-
-
         }
-
 };
 
 angular.module('myTubeApp').factory('youtubeFactory',youtubeFactory);
 
-
-
 /*
+SAMPLE OUTPUT of search.execute:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
                 [
                  {
@@ -122,8 +138,3 @@ angular.module('myTubeApp').factory('youtubeFactory',youtubeFactory);
                     }
 
                 */
-
-
-////               [
-
-

@@ -1,13 +1,8 @@
-var likevidsController = function($scope, $log, appInfo,youtubeFactory) {
-    $scope.sortBy = 'name';
-    $scope.reverse = true;
-    $scope.customerLimit = 10;
-    $scope.customers = [];
+//This controller is a stub for the liked videos page
+
+var likeVidsController = function($scope, $log, appInfo,youtubeFactory) {
     $scope.appInfo = appInfo;
 };
 
-function init() {};
-init();
-    
-myTubeApp.controller('likevidsController', likevidsController);
+myTubeApp.controller('likeVidsController', likeVidsController);
 
