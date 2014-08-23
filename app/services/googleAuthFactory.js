@@ -1,4 +1,4 @@
-var googleAuthFactory = function ($injector, $timeout) {
+var googleAuthFactory = function ($injector, $timeout, $rootScope) {
 
     return {
         API_KEY: 'AIzaSyAnSABpTcJtt9tDfOVFKl6j1PPuWFmKSqQ',
@@ -57,6 +57,8 @@ var googleAuthFactory = function ($injector, $timeout) {
                     gapi.client.oauth2.userinfo.get().execute(function(resp){
                         that.username = resp.name;
                         that.userPicture = resp.picture;
+                        // firing an event appropriately named for this time
+                        $rootScope.$broadcast('userinfo_loaded');
                     });
                 });
             } else {
