@@ -13,9 +13,9 @@ myTubeApp.config(function($routeProvider) {
             controller: 'searchVidsController',
             templateUrl: 'app/views/searchvids.html'
         })
-        .when('/history', {
-            controller: 'historyController',
-            templateUrl: 'app/views/history.html'
+        .when('/playlists', {
+            controller: 'playlistsController',
+            templateUrl: 'app/views/playlists.html'
         })
         .when('/subscriptions', {
             controller: 'subscriptionsController',
@@ -26,8 +26,8 @@ myTubeApp.config(function($routeProvider) {
 });
 
 //Initializing communications with YouTube Data API V3
-myTubeApp.run(function(youtubeFactory){
-    youtubeFactory.init();
+myTubeApp.run(function(googleAuthFactory){
+    googleAuthFactory.init();
 });
     
 

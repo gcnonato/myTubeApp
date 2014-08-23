@@ -23,12 +23,12 @@ myTubeApp.directive('videoTable', function(youtubeFactory){
             }
         }
     });
-myTubeApp.directive('loginButton', function(youtubeFactory){
+myTubeApp.directive('loginButton', function(googleAuthFactory){
     return {
         template: '<div ng-click="loginButton()" class="pre-auth">Login to Google</div><div class="post-auth" style="display: none">MY UserName</div>',
         link: function(scope, element, attrs) {
             scope.loginButton = function(){
-                youtubeFactory.login();
+                googleAuthFactory.login();
             };
         }
     }

@@ -1,76 +1,22 @@
-var youtubeFactory = function ($injector, $timeout) {
+var youtubeFactory = function ($injector, $timeout, googleAuthFactory ) {
 
         return {
             API_KEY: 'AIzaSyAnSABpTcJtt9tDfOVFKl6j1PPuWFmKSqQ',
             OAUTH2_CLIENTID: '43179681697-hb5mkrhms4a09o8gsddh6627ldcbedmv.apps.googleusercontent.com',
             OAUTH2_SCOPE: ['https://www.googleapis.com/auth/youtube'],
-            readyForAction: false,
             resultsMax: 5,
             lastSearch: "",
             responseList: {},
-            //will use this later when i need to distinguish users that are logged in and users that aren't
-            loggedInAsGoogleUser: false,
+            plResponseList: {},
 
-            /**
-             * init the google API client and set the readyForAction flag
-             */
-            init: function(){
-                // since this function is called as a callback, we'll need "this" to really be the factory
-                var that = $injector.get('youtubeFactory');
-                if (typeof gapi.client === 'undefined') {
-                    console.log('google apis not loaded yet...');
-                    // if not ready yet, try again in half a second
-                    $timeout(that.init, 500);
-                } else {
-                    console.log('google apis LOADED!');
-                    gapi.client.load('youtube', 'v3', function(){
-                        gapi.client.setApiKey(that.API_KEY);
-                        // NOW we're actually ready to use the YouTube API
-                        that.readyForAction = true;
-                    });
-                }
-            },
 
-            login: function() {
-                var that = $injector.get('youtubeFactory');
-                if (!this.readyForAction){
-                    // if we're not ready, don't do nothing
-                    console.log('google apis not loaded, cant login');
-                    return;
-                }
-
-                that.handleAuthResult = function (authResult) {
-                    if (authResult && !authResult.error) {
-                        $('.pre-auth').hide();
-                        $('.post-auth').show();
-                        console.log('OAUTH DONE');
-                        that.loggedInAsGoogleUser = true;
-                        // now to see what we get with the authResult...
-                        console.log(authResult);
-                    } else {
-                        console.log('OAUTH NOT DONE');
-                    }
-                };
-
-                that.checkAuth = function(){
-                    gapi.auth.authorize({
-                        client_id: that.OAUTH2_CLIENTID,
-                        scope: that.OAUTH2_SCOPE,
-                        immediate: false
-                    }, that.handleAuthResult);
-                };
-                gapi.auth.init(function() {
-                window.setTimeout(that.checkAuth, 1);
-                });
-
-            },
 
             /**
              * run a video search on YouTube and make the response available in the callback
              */
             search: function(queryPhrase, callback){
                 var that = $injector.get('youtubeFactory');
-                if (!this.readyForAction){
+                if (!googleAuthFactory.readyForAction){
                     // if we're not ready, don't do nothing
                     console.log('google apis not loaded, cant search');
                     return;
@@ -83,8 +29,8 @@ var youtubeFactory = function ($injector, $timeout) {
                     queryParams.q = queryPhrase;
                 }
 
-                if (this.lastSearch !== queryPhrase){
-                    this.lastSearch = queryPhrase;
+                if (that.lastSearch !== queryPhrase){
+                    that.lastSearch = queryPhrase;
                 }
 
                 // init the request object using queryParams
@@ -105,7 +51,7 @@ var youtubeFactory = function ($injector, $timeout) {
              */
             getPlayer: function(vid) {
                 var that = $injector.get('youtubeFactory');
-                if (!this.readyForAction){
+                if (!googleAuthFactory.readyForAction){
                     // if we're not ready, don't do nothing
                     console.log('google apis not loaded, cant get player');
                     return;
@@ -124,26 +70,28 @@ var youtubeFactory = function ($injector, $timeout) {
                     // append the newElement into its place in the view
                     $('div.videoBox').append(newElement);
                 });
-            }
-            ,
-
-            moarFunc: function(){
-//                obj = {};
-
-                if (obj && obj.value > 0 && obj.value <10){
-//                if (num > 0 && num < 10){
-//                    console.log('result is negative');
-//                    console.log('result is zero');
-//                    console.log('result is pozitive');
-//                    console.log('result is smaller than 10');
-//                    console.log('result is larger than 10');
-                    console.log ('goodness');
-                } else {
-                    console.log ('badness');
+            },
+            getPlaylists: function(callback){
+                var that = $injector.get('youtubeFactory');
+                if (!googleAuthFactory.readyForAction){
+                    // if we're not ready, don't do nothing
+                    console.log('google apis not loaded, cant get player');
+                    return;
                 }
+                if (!googleAuthFactory.loggedInAsGoogleUser){
+                    console.log('google auth not ready, cant get playlist');
+                    return;
+                }
+
+                var queryParams = { part: 'snippet', mine: true };
+                var requestList =  gapi.client.youtube.playlists.list(queryParams);
+                requestList.execute(function(response){
+                    that.plResponseList = response;
+                    callback(response);
+                    console.log(response);
+                });
             }
         }
-
 };
 
 angular.module('myTubeApp').factory('youtubeFactory',youtubeFactory);
@@ -194,3 +142,63 @@ SAMPLE OUTPUT of search.execute:
                     }
 
                 */
+/*
+
+ SAMPLE OUTPUT of playlist.execute:
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[{
+    "id": "gapiRpc",
+    "result": {
+        "kind": "youtube#playlistListResponse",
+        "etag": "\"gMjDJfS6nsym0T-NKCXALC_u_rM/4CKkP8Iy5Ura-NgyfpzS9Dz_0M8\"",
+        "nextPageToken": "CAUQAA",
+        "pageInfo": {
+            "totalResults": 12,
+            "resultsPerPage": 5
+        },
+        "items": [
+            {
+                "kind": "youtube#playlist",
+                "etag": "\"gMjDJfS6nsym0T-NKCXALC_u_rM/h0rLd8TKiEJM5SJMwujdQpt5-ao\"",
+                "id": "PLbFDzuRaDWYmCpVsHzpqOqjO1vNxF6O_X",
+                "snippet": {
+                    "publishedAt": "2013-01-20T15: 55: 16.000Z",
+                    "channelId": "UCkvOjAtA--7tJoS8CjnWMEw",
+                    "title": "BI-BusinessIntelligence",
+                    "description": "",
+                    "thumbnails": {
+                        "default": {
+                            "url": "https: //i.ytimg.com/vi/HAR7uXwn0OI/default.jpg",
+                            "width": 120,
+                            "height": 90
+                        },
+                        "medium": {
+                            "url": "https: //i.ytimg.com/vi/HAR7uXwn0OI/mqdefault.jpg",
+                            "width": 320,
+                            "height": 180
+                        },
+                        "high": {
+                            "url": "https: //i.ytimg.com/vi/HAR7uXwn0OI/hqdefault.jpg",
+                            "width": 480,
+                            "height": 360
+                        },
+                        "standard": {
+                            "url": "https: //i.ytimg.com/vi/HAR7uXwn0OI/sddefault.jpg",
+                            "width": 640,
+                            "height": 480
+                        },
+                        "maxres": {
+                            "url": "https: //i.ytimg.com/vi/HAR7uXwn0OI/maxresdefault.jpg",
+                            "width": 1280,
+                            "height": 720
+                        }
+                    },
+                    "channelTitle": "McNostrill"
+                }
+            }
+        ]
+    }
+}
+]
+*/

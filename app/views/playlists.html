@@ -1,0 +1,11 @@
+<h3>Playlists</h3>
+<p>This is where the playlists will be</p>
+<div class="verticalSpacer"></div>
+<table class="table table-striped table-hover">
+    <tr>
+        <th>Playlist</th>
+    </tr>
+    <tr ng-repeat="playlist in youtubeFactory.plResponseList.items" class="animated fadeIn">
+        <td><img src="{{ playlist.snippet.thumbnails.medium.url}}" class="vidThumb"></td>
+    </tr>
+</table>
