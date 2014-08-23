@@ -19,6 +19,10 @@ var googleAuthFactory = function ($injector, $timeout) {
                 console.log('google apis LOADED!');
                 gapi.client.setApiKey(that.API_KEY);
                 that.readyForLogin = true;
+                gapi.client.load('youtube', 'v3', function () {
+                    // NOW we're actually ready to use the YouTube API
+                    that.readyForAction = true;
+                });
                 $timeout(that.implicitLogin, 1);
             }
         },
@@ -61,11 +65,6 @@ var googleAuthFactory = function ($injector, $timeout) {
                 console.log('OAUTH NOT DONE');
                 that.loggedInAsGoogleUser = false;
             }
-
-            gapi.client.load('youtube', 'v3', function () {
-                // NOW we're actually ready to use the YouTube API
-                that.readyForAction = true;
-            });
         },
 
         login: function () {
