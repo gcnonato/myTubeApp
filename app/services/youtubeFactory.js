@@ -2,10 +2,14 @@ var youtubeFactory = function ($injector, $timeout) {
 
         return {
             API_KEY: 'AIzaSyAnSABpTcJtt9tDfOVFKl6j1PPuWFmKSqQ',
+            OAUTH2_CLIENTID: '43179681697-hb5mkrhms4a09o8gsddh6627ldcbedmv.apps.googleusercontent.com',
+            OAUTH2_SCOPE: ['https://www.googleapis.com/auth/youtube'],
             readyForAction: false,
             resultsMax: 5,
             lastSearch: "",
             responseList: {},
+            //will use this later when i need to distinguish users that are logged in and users that aren't
+            loggedInAsGoogleUser: false,
 
             /**
              * init the google API client and set the readyForAction flag
@@ -27,6 +31,40 @@ var youtubeFactory = function ($injector, $timeout) {
                 }
             },
 
+            login: function() {
+                var that = $injector.get('youtubeFactory');
+                if (!this.readyForAction){
+                    // if we're not ready, don't do nothing
+                    console.log('google apis not loaded, cant login');
+                    return;
+                }
+
+                that.handleAuthResult = function (authResult) {
+                    if (authResult && !authResult.error) {
+                        $('.pre-auth').hide();
+                        $('.post-auth').show();
+                        console.log('OAUTH DONE');
+                        that.loggedInAsGoogleUser = true;
+                        // now to see what we get with the authResult...
+                        console.log(authResult);
+                    } else {
+                        console.log('OAUTH NOT DONE');
+                    }
+                };
+
+                that.checkAuth = function(){
+                    gapi.auth.authorize({
+                        client_id: that.OAUTH2_CLIENTID,
+                        scope: that.OAUTH2_SCOPE,
+                        immediate: false
+                    }, that.handleAuthResult);
+                };
+                gapi.auth.init(function() {
+                window.setTimeout(that.checkAuth, 1);
+                });
+
+            },
+
             /**
              * run a video search on YouTube and make the response available in the callback
              */
@@ -34,7 +72,7 @@ var youtubeFactory = function ($injector, $timeout) {
                 var that = $injector.get('youtubeFactory');
                 if (!this.readyForAction){
                     // if we're not ready, don't do nothing
-                    console.log('Im Not Ready!!!');
+                    console.log('google apis not loaded, cant search');
                     return;
                 }
 
@@ -69,7 +107,7 @@ var youtubeFactory = function ($injector, $timeout) {
                 var that = $injector.get('youtubeFactory');
                 if (!this.readyForAction){
                     // if we're not ready, don't do nothing
-                    console.log('Im Not Ready!!!');
+                    console.log('google apis not loaded, cant get player');
                     return;
                 }
 
@@ -87,7 +125,25 @@ var youtubeFactory = function ($injector, $timeout) {
                     $('div.videoBox').append(newElement);
                 });
             }
+            ,
+
+            moarFunc: function(){
+//                obj = {};
+
+                if (obj && obj.value > 0 && obj.value <10){
+//                if (num > 0 && num < 10){
+//                    console.log('result is negative');
+//                    console.log('result is zero');
+//                    console.log('result is pozitive');
+//                    console.log('result is smaller than 10');
+//                    console.log('result is larger than 10');
+                    console.log ('goodness');
+                } else {
+                    console.log ('badness');
+                }
+            }
         }
+
 };
 
 angular.module('myTubeApp').factory('youtubeFactory',youtubeFactory);

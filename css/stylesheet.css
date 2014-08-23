@@ -38,3 +38,20 @@
     background-color: #cbe1ff;
 
 }
+
+#loginButton {
+    float: right;
+    right: 15px;
+    position: relative;
+}
+
+#navBarList {
+    margin-top: 30px;
+}
+
+.logo {
+    float: left ;
+    width: 90px;
+    height: 90px;
+    margin: 10px;
+}
