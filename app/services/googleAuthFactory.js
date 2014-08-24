@@ -57,7 +57,7 @@ var googleAuthFactory = function ($injector, $timeout, $rootScope) {
                     gapi.client.oauth2.userinfo.get().execute(function(resp){
                         that.username = resp.name;
                         that.userPicture = resp.picture;
-                        // firing an event appropriately named for this time
+                        // firing an event here so i can $digest() the scope with the name and pic
                         $rootScope.$broadcast('userinfo_loaded');
                     });
                 });

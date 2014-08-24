@@ -7,5 +7,6 @@
     </tr>
     <tr ng-repeat="playlist in youtubeFactory.plResponseList.items" class="animated fadeIn">
         <td><img src="{{ playlist.snippet.thumbnails.medium.url}}" class="vidThumb"></td>
+        <td>{{ playlist.snippet.title}}</td>
     </tr>
 </table>

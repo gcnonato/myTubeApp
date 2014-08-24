@@ -1,9 +1,6 @@
 var youtubeFactory = function ($injector, $timeout, googleAuthFactory ) {
 
         return {
-            API_KEY: 'AIzaSyAnSABpTcJtt9tDfOVFKl6j1PPuWFmKSqQ',
-            OAUTH2_CLIENTID: '43179681697-hb5mkrhms4a09o8gsddh6627ldcbedmv.apps.googleusercontent.com',
-            OAUTH2_SCOPE: ['https://www.googleapis.com/auth/youtube'],
             resultsMax: 5,
             lastSearch: "",
             responseList: {},
